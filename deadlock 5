@@ -1,0 +1,81 @@
+# include <stdio.h>
+ int main(){
+  // Things to be inputed from user  
+  int n, m;
+  int allocation[10][10],
+      max[10][10],
+      available[10];
+  // Things not to be inputed from user
+  int need[10][10],
+      finish[10],
+      safeSeq[10],
+      work[10];
+  printf("Enter the Number of Processes:- ");
+  scanf("%d",&n);
+  printf("Enter the Number of Resources:- ");
+  scanf("%d",&m);
+  printf("Enter the Allocation Matrix:- \n");
+  for(int i = 0;i < n;i++){
+    for(int j = 0;j < m;j++){
+      scanf("%d",&allocation[i][j]);
+    }
+  }
+  printf("Enter the Maximum Matrix:- \n");
+  for(int i = 0;i < n;i++){
+    for(int j = 0;j < m;j++){
+      scanf("%d",&max[i][j]);
+    }
+  }
+  printf("Enter the Available Resource:- \n");
+  for(int j = 0;j < m;j++){
+      scanf("%d",&available[j]);
+  }
+  // Calculate Need Matrix
+  for(int i = 0;i < n;i++){
+    for(int j = 0;j < m;j++){
+      need[i][j] = max[i][j] - allocation[i][j];
+    }
+  }
+  // Initialize Finish array
+  for(int i = 0;i < n;i++){
+      finish[i] = 0;
+  }
+  // Initialize work with Available Resources
+  for(int j = 0;j < m;j++){
+      work[j] = available[j];
+  }
+  int count = 0;
+  while(count < n){
+    int found = 0;
+    for(int i = 0; i< n;i++){
+      if(finish[i] == 0){
+        int flag = 1;
+        for(int j = 0;j < m;j++){
+          if(need[i][j] > work[j]){
+            flag = 0;
+            break;
+          }
+        }
+        if(flag){
+          for(int j = 0;j < m;j++){
+            work[j] += allocation[i][j];
+          }
+          safeSeq[count++] = i;
+          finish[i] = 1;
+          found = 1;
+        }
+      }
+    }
+    if(!found){
+      printf("System is not in Safe State\n");
+      return 0;
+    }
+  }
+  printf("System is in a Safe State\n");
+  printf("Safe Sequence:- ");
+  for(int i = 0;i < n;i++){
+    printf("P%d ",safeSeq[i]);
+  }
+  printf("\n");
+  return 0;
+ }
