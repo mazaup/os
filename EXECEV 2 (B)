@@ -32,9 +32,9 @@ int main() {
         // --- Child Process ---
         char *args[7]; // 5 numbers + program name + NULL
         args[0] = "./child";
-        char num[5][10];
+        char num[5][10];        //create a 2D character array to store the numbers as strings Because execve() only accepts strings.
         for (i = 0; i < 5; i++) {
-            sprintf(num[i], "%d", arr[i]);
+            sprintf(num[i], "%d", arr[i]); // convert arr[i] into string and store in num[i] eg;- "10"
             args[i + 1] = num[i];
         }
         args[6] = NULL;
@@ -55,12 +55,13 @@ chil.c
 
 int main(int argc, char *argv[]) {
     printf("Child received array in reverse order:\n");
-    for (int i = argc - 1; i > 0; i--) {
-        printf("%s ", argv[i]);
+    for (int i = 1; i < argc; i++) {
+      printf("%s ", argv[i]);
     }
     printf("\n");
     return 0;
 }
+
 
 gcc parent.c -o parent
 gcc child.c -o child
