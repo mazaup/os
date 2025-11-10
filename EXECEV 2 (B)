@@ -1,0 +1,65 @@
+main.c
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+
+int main() {
+    int arr[5], i;
+    printf("Enter 5 numbers:\n");
+    for (i = 0; i < 5; i++)
+        scanf("%d", &arr[i]);
+
+    // Parent sorts array
+    for (int i = 0; i < 5; i++) {
+        for (int j = i + 1; j < 5; j++) {
+            if (arr[i] > arr[j]) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+    }
+
+    printf("Parent sorted array (Ascending): ");
+    for (i = 0; i < 5; i++)
+        printf("%d ", arr[i]);
+    printf("\n");
+
+    int pid = fork();
+
+    if (pid == 0) {
+        // --- Child Process ---
+        char *args[7]; // 5 numbers + program name + NULL
+        args[0] = "./child";
+        char num[5][10];
+        for (i = 0; i < 5; i++) {
+            sprintf(num[i], "%d", arr[i]);
+            args[i + 1] = num[i];
+        }
+        args[6] = NULL;
+
+        execve("./child", args, NULL);
+        perror("execve failed");
+    } 
+    else {
+        wait(NULL);
+        printf("Child finished showing reversed array.\n");
+    }
+
+    return 0;
+}
+
+chil.c
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+    printf("Child received array in reverse order:\n");
+    for (int i = argc - 1; i > 0; i--) {
+        printf("%s ", argv[i]);
+    }
+    printf("\n");
+    return 0;
+}
+
+  
