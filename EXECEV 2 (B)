@@ -1,4 +1,4 @@
-main.c
+parent.c
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -62,4 +62,7 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
+gcc parent.c -o parent
+gcc child.c -o child
+./parent
   
