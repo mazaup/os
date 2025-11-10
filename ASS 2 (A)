@@ -1,0 +1,65 @@
+//**** ASSIGNMENT 2 A 
+#include <stdio.h>
+#include <unistd.h>   // for fork(), getpid(), getppid(), sleep()
+#include <sys/wait.h> // for wait()
+
+int main() {
+    int arr[5], i;
+    printf("Enter 5 numbers:\n");
+    for (i = 0; i < 5; i++)
+        scanf("%d", &arr[i]);
+
+    int pid = fork();  // Create child process
+
+    if (pid == 0) {
+        // --- CHILD PROCESS ---
+        printf("\nThis is Child Process\n");
+        printf("Child PID: %d \n", getpid());
+
+        // Child sorts in descending order
+        for (int i = 0; i < 5; i++) {
+            for (int j = i + 1; j < 5; j++) {
+                if (arr[i] < arr[j]) {
+                    int temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+
+        printf("Child Sorted (Descending): ");
+        for (i = 0; i < 5; i++)
+            printf("%d ", arr[i]);
+        printf("\n");
+
+        // Sleep to show orphan process
+        sleep(5);
+        printf("After sleep, my new parent PID: %d (Orphan adopted by init)\n", getppid());
+    } 
+    else {
+        // --- PARENT PROCESS ---
+        printf("\nThis is Parent Process\n");
+        printf("Parent PID: %d \n", getpid() );
+
+        // Parent sorts in ascending order
+        for (int i = 0; i < 5; i++) {
+            for (int j = i + 1; j < 5; j++) {
+                if (arr[i] > arr[j]) {
+                    int temp = arr[i];
+                    arr[i] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+
+        printf("Parent Sorted (Ascending): ");
+        for (i = 0; i < 5; i++)
+            printf("%d ", arr[i]);
+        printf("\n");
+
+        wait(NULL); // Parent waits for child
+        printf("Child process completed. Parent exiting.\n");
+    }
+
+    return 0;
+}
